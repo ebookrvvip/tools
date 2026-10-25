@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-scan-alive.py - cek host langsung lewat HTTP/HTTPS, tanpa httpx.
+http.py - cek host langsung lewat HTTP/HTTPS, tanpa httpx.
 
 Alur:
     subs.txt (daftar host) -> script -> alive.txt
