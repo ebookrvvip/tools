@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-http.py - cek host langsung lewat HTTP/HTTPS, tanpa httpx.
+alive.py - cek host langsung lewat HTTP/HTTPS, tanpa httpx.
 
 Alur:
     subs.txt (daftar host) -> script -> alive.txt
@@ -8,16 +8,16 @@ Alur:
 Cara kerja:
 - Port HTTP (80, 8000, 8008, 8080, 8081, 8088, 8888) dicek pakai skema http.
 - Port HTTPS (443, 4443, 8443, 9443) dicek pakai skema https.
-- Status 400, 502, 503, 504 dibuang.
+- Status 502, 503, 504 dibuang.
 - Status lain masuk alive.txt.
 - Host tanpa respons (timeout, TLS gagal, koneksi ditolak) tidak masuk.
 - Host sama + hash body sama -> simpan satu, prioritas https 443.
 - Redirect tidak diikuti, jadi host external tidak pernah ikut.
 
 Pemakaian:
-    python3 scan-alive.py subs.txt
-    python3 scan-alive.py subs.txt -o hasil -t 8 -j 64
-    python3 scan-alive.py subs.txt --http-ports 80,8080 --https-ports 443
+    python3 alive.py subs.txt
+    python3 alive.py subs.txt -o hasil -t 8 -j 64
+    python3 alive.py subs.txt --http-ports 80,8080 --https-ports 443
 """
 import argparse
 import hashlib
@@ -34,7 +34,7 @@ from urllib.parse import urlsplit
 DEFAULT_HTTP_PORTS = (80, 8000, 8008, 8080, 8081, 8088, 8888)
 DEFAULT_HTTPS_PORTS = (443, 4443, 8443, 9443)
 
-EXCLUDED_STATUS = {400, 502, 503, 504}
+EXCLUDED_STATUS = {502, 503, 504}
 
 DEFAULT_UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -301,7 +301,7 @@ def main():
     print(f"port https        : {','.join(str(p) for p in https_ports)}")
     print(f"total probe       : {total}")
     print(f"tanpa respons     : {sum(errors.values())}  {human_list(dict(errors))}")
-    print(f"dibuang 400/502/503/504: {sum(excluded.values())}  {human_list(dict(excluded))}")
+    print(f"dibuang 502/503/504: {sum(excluded.values())}  {human_list(dict(excluded))}")
     print(f"respons diterima  : {len(alive_rows)}")
     print(f"duplikat isi sama : {collapsed}")
     print(f"alive.txt         : {len(alive)} host")
